@@ -1,3 +1,3 @@
-# hello-world
-Just another repo
-G'day
+# POSH Repo
+A collection of useful powershell scripts stored in one place.
+
