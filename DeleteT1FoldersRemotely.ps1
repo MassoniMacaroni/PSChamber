@@ -1,5 +1,5 @@
 ﻿Write-Host "This Script will end any T1 Processes on the target PC and delete all T1 folders. `n"
-Write-Host "This Script requires PSRemoting to be enabled. `n"
+Write-Host "This Script will enable and disable WinRM. `n"
 
 # Declare Variables
 $HostName = Read-host -Prompt "Please Enter a PC name."
