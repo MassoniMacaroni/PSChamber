@@ -1,0 +1,1 @@
+powershell.exe -noLogo -ExecutionPolicy unrestricted -file "File Name"
