@@ -1,4 +1,4 @@
-﻿$UserList = import-csv \\8cc9224ppb\C$\Temp\Scripts\ExpireUserList.csv 
+﻿$UserList = import-csv 'File Path' 
 
 ForEach ($Username in $UserList) {
     $User = Get-ADUser $Username -properties pwdLastSet
@@ -6,9 +6,9 @@ ForEach ($Username in $UserList) {
     
     Write-Host "Processing "$User -ForegroundColor Yellow
 	$User.pwdLastSet = 0
-	Set-ADUser -Instance $User -Server HCC-S-SRAD05
+	Set-ADUser -Instance $User -Server 'Server Name'
 	$User.pwdLastSet = -1
 	
     Write-Host "Processed "$User -ForegroundColor Green
-    #Set-ADUser -ChangePasswordAtLogon:$true
+    Set-ADUser -ChangePasswordAtLogon:$true
     }
