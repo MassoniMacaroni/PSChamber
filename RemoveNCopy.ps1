@@ -1,8 +1,7 @@
-﻿$HostName = get-content 'C:\Temp\Scripts\CScomputerlist.csv'
-
+﻿$HostName = get-content 'CSV Location with Hostnames'
 
 foreach ($PC in $HostName) {
-    $RemotePath = "\\$PC\C$\Users\Public\Desktop\Cisco Finesse - Backup.url"
+    $RemotePath = "\\$PC\C$\Users\Public\Desktop\Specify File"
     remove-item -path $RemotePath -force -recurse
-    copy-item "\\hcc-dom\files\Common\Rigo\Cisco Finesse.url" -Destination "\\$PC\C$\Users\Public\Desktop"
+    copy-item "Specify File location" -Destination "\\$PC\C$\Users\Public\Desktop"
     }
