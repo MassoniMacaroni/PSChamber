@@ -12,3 +12,5 @@ Table of Contents
     - This script enables WinRM in order to remotely delete a multiple folders using wildcards.
 * SetEnglishAu.ps1 
     - Removes English US and forces English Au to the default language.
+* RemoveNCopy.ps1
+    - Removes a file and copies it to multiple PCs
