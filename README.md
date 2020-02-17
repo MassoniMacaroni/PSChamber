@@ -6,6 +6,8 @@ Table of Contents
 
 * ADExpireUsers.ps1 
     - Disables password never expires for users and sets their password to change at next logon.
+* ADUnlockUserTool.ps1    
+    - Powershell tool to easily unlock locked accounts in Active Directory.
 * BatExePOSH 
     - Simple command to run powershell scripts via batch.
 * DeleteT1FoldersRemotely.ps1 
