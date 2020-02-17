@@ -19,3 +19,5 @@ foreach ($account in $AccountArray) {
 $IndexRef = Read-host -Prompt "Select Account No. to unlock"
 #Unlocks the specified AD account from Index Ref value
 Unlock-ADAccount -identity $AccountArray[($IndexRef)]
+
+
