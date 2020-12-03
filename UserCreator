@@ -34,6 +34,16 @@ write-host "
 }
 
 function Start-Sleep($seconds) {
+<# 
+.SYNOPSIS
+creates a loading animation for the start-sleep method by using it as a function instead.
+
+start-sleep(number of seconds)
+
+.Example
+start-sleep(10)
+
+#>
     $doneDT = (Get-Date).AddSeconds($seconds)
     while($doneDT -gt (Get-Date)) {
         $secondsLeft = $doneDT.Subtract((Get-Date)).TotalSeconds
@@ -45,6 +55,10 @@ function Start-Sleep($seconds) {
 }
 
 function Get-ChildOU($distinguishedName) {
+  <#
+  .SYNOPSIS
+  Populates an array with all of the child OUs under the $baseOU
+  #>
   $baseOU = Get-ADOrganizationalUnit -Filter 'DistinguishedName -like $distinguishedName' | Select Name,DistinguishedName
   $childOU = Get-ADOrganizationalUnit -Filter * -SearchBase $baseOU.DistinguishedName.ToString() -SearchScope OneLevel | Select Name,DistinguishedName
   $OUArray = [System.Collections.ArrayList]@($baseOU)
@@ -58,6 +72,9 @@ function Get-ChildOU($distinguishedName) {
 }
 
 function Input-UserInfo(){
+<#
+Prompts and formats all user info variables required to correct an ADUser, prompts the user to see if a like user is required.
+#>
 banner
 $userChoice = ""
 
@@ -106,6 +123,11 @@ $global:userReq = $false
 }
 
 function Select-OU(){
+<#
+.SYNOPSIS
+Prompts for an OU in which the user will be created to be selected, loops through all OUs and outputs a list to be selected from.
+Selecting the option 0 selects that option.
+#>
 Clear-Host
 banner
 Write-Host "Please select the OU for where the user will be created. `n"
@@ -135,6 +157,10 @@ Start-Sleep(2)
 }
 
 function Review-UserInfoOU(){
+<#
+.SYNOPSIS
+Prints all of the fields that will be written to in the Input-UserInfo function to be reviewed
+#>
 Clear-Host
 banner
 Write-Host "`nPlease Review all entered information."
@@ -147,6 +173,10 @@ Write-Host "`nThe user will be created in the: $dn OU"
 }
 
 function Set-LikeUser(){
+<#
+.SYNOPSIS
+If a likeuser was required this function gets the properties for the department/company/office and copies the likeusers groups to the newly created user.
+#>
   #Copy user groups 
   Get-ADUser -Identity $global:likeUser -Properties memberof | Select-Object -ExpandProperty memberof | Add-ADGroupMember -Members $global:samAccountName -PassThru | Select-Object -Property SamAccountName
   #Get User Properties
@@ -158,6 +188,10 @@ function Set-LikeUser(){
 }
 
 function Test-Cred(){
+<#
+.SYNOPSIS
+Validates credentials used to connect to the exchange server, neccessary as the Get-Credential method does not allow for incorrect passwords.
+#>
 $credsVerified = $false
 Do {
     $cred = Get-Credential #Read credentials
@@ -181,6 +215,10 @@ return $UserCredential
 }
 
 function Create-FDrive($username){
+<#
+.SYNOPSIS
+Creates the users FDrive and adds all of the security required for that folder, takes the username parameter of a samaccountname and uses it to name the folder
+#>
   #Path for user folder
   $Path = "\\HCC-DOM\files\User"
 
@@ -203,13 +241,17 @@ function Create-FDrive($username){
 }
 
 function Create-Mailbox(){
+<#
+.SYNOPSIS
+Creates the users mailbox and prompts for which mail database to use. Uses the credentials from the Test-Cred function to create a session with the exchange shell.
+#>
 #Authentication to Exchange Server
 #start PS session with exchange server in order to execute Exchange shell CMDLETS
 $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri $exchangeConectURI -Credential $UserCredential -Authentication Kerberos
 Import-PSSession $Session -DisableNameChecking
 
-
-
+$correctMB = $false
+Do{
 #Load database objects into the array
 $mailboxArray = (Get-MailboxDatabase)
 Clear-host
@@ -226,9 +268,14 @@ $MBChoice = Read-Host -Prompt "Select database"
 $mailboxDatabase = $mailboxArray[$MBChoice].Name
 Write-host "`n"
 Write-Host "$mailboxDatabase has been selected"
-
+$MBCheck = Read-Host -Prompt "`nPlease specify 'yes' if $mailboxDatabase is the database you'd like to select"
+if ($MBCheck -eq 'yes' -or $MBCheck -eq 'y') {
 #User is already created, so a mailbox needs to be enabled
 Enable-Mailbox -Identity $emailAddress -Alias $global:samAccountName -Database $mailboxDatabase
+Write-Host "$mailboxDatabase has been finalised as the database"
+$correctMB = $true
+}
+} until ($correctMB -eq $true)
 
 #Add the sip email address to the mailboxes other addresses
 $mbx = Get-Mailbox $global:samAccountName
@@ -240,8 +287,10 @@ Remove-PSSession $Session
 }
 
 function Set-UserProperties() {
-############################################
-            #COPY OFFICE#
+<#
+.SYNOPSIS
+If a user does not have a like user this function provides options to select a department and office.
+#>
 Clear-Host
 $officeArray = get-aduser -Properties office -Filter * -SearchBase $dn | select office -ExpandProperty office | sort | get-unique
 $i = 0
@@ -253,8 +302,6 @@ foreach ($office in $officeArray){
 $OffChoice = Read-Host -Prompt "Select the office suitable for the user"
 $office = $officeArray[$OffChoice]
 
-############################################
-            #COPY DEPARTMENT#
 Clear-host
 $departmentArray = get-aduser -Properties department -Filter * -SearchBase $dn | select department -ExpandProperty department | sort | get-unique
 $i = 0
@@ -272,9 +319,13 @@ Set-ADUser -Identity $global:samAccountName -Department $department -Company $co
 }
 
 function Assign-365License(){
+<#
+.SYNOPSIS
+Connects to microsoft online and assigns a 365 Enterprise pack license
+#>
 Clear-Host
 banner
-Write-Host "Does the user require an Office 365 License?`n`nPlease be aware that assign a license will ask you to log in twice to verify AzureAD Services" `n`n
+Write-Host "Does the user require an Office 365 License?`n`nPlease be aware that assigning a license will ask you to log in to verify AzureAD Services`n`nUSE YOUR ADMIN ACCOUNT" `n`n
 $365Check = Read-Host -Prompt "Please specify 'yes' if the user requires a 365 license"
 if($365Check -eq 'yes' -or $365Check -eq 'y'){
     Connect-MsolService
@@ -286,29 +337,43 @@ if($365Check -eq 'yes' -or $365Check -eq 'y'){
 }
 
 function Sync-Azure(){
+<#
+.SYNOPSIS
+Invokes a delta sync on the azure connect server to sync the newly created account so a license can be assigned.
+#>
 Invoke-Command -ComputerName $azureConnectServer -ScriptBlock {
     Import-Module adsync
     Start-ADSyncSyncCycle -PolicyType Delta
 }
 }
 
-function Set-Phones(){
-$phones = Get-aduser -Identity $global:samAccountName -Properties ipphone,homephone,officephone
-$extNumber = Read-Host -Prompt "`nPlease enter a four digit extension"
-$phones.ipphone = $extNumber
-$phones.homephone = "(02) 4560 $extNumber"
-$phones.officephone = "+6124560$extNumber"
-$phones.fax = "(02) 4587 7740"
-Set-ADUser -Instance $phones
-Write-Host "`n$global:samAccountName has been assigned an extension of $extNumber"
-Start-Sleep(3)
+function Check-Phone() {
+<#
+.SYNOPSIS
+Prompts if a phone extension is required for the user profile and provides and option to review input
+#>
+$extVerified = $false
+Do {
+    $phoneReq = Read-Host -Prompt "`nPlease specify 'yes' if you'd like to add a phone extension"
+    if($phoneReq -eq 'yes' -or $phoneReq -eq 'y'){
+        $phones = Get-aduser -Identity $global:samAccountName -Properties ipphone,homephone,officephone
+        $global:extNumber = Read-Host -Prompt "`nPlease enter a four digit extension"
+        $phones.ipphone = $global:extNumber
+        $phones.homephone = "(02) 4560 $global:extNumber"
+        $phones.officephone = "+6124560$global:extNumber"
+        $phones.fax = "(02) 4587 7740"
+
+        Write-host "The current extension number is $global:extNumber"
+        $reviewcheck = Read-Host -Prompt "`nPlease specify 'yes' if the extension number $global:extNumber is correct"
+    if($reviewCheck -eq 'yes' -or $reviewCheck -eq 'y') {
+        Set-ADUser -Instance $phones
+        Write-Host "`n$global:samAccountName has been assigned an extension of $global:extNumber"
+        $extVerified = $true
+        Start-Sleep(3)
 }
 
-function Check-Phone() {
-$phoneReq = Read-Host -Prompt "`nPlease specify 'yes' if you'd like to add a phone extension"
-if($phoneReq -eq 'yes' -or $phoneReq -eq 'y'){
-Set-Phones
 }
+} until ($extVerified -eq $true)
 }
 
 function User-CreatedBanner(){
@@ -333,6 +398,10 @@ $$    $$/ /     $$/ $$       |$$ |            $$    $$/ $$ |      $$       |$$  
 '}
 
 function ReviewUserInfoOULoop(){
+<#
+.SYNOPSIS
+Reviews the information provided in the input-userinfo and loops enabling the information to be verified
+#>
 $reviewBoolean = $false
 clear-host
 Input-UserInfo
