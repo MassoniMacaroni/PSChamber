@@ -1,5 +1,5 @@
 # POSH Repo
-A collection of useful powershell scripts stored in one place.
+My collection of powershell scripts that I've developed to make processes easier.
 
 Table of Contents
 =================
