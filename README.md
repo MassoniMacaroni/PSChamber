@@ -17,4 +17,4 @@ Table of Contents
 * RemoveNCopy.ps1
     - Removes a file and copies it to multiple PCs
 * Usercreator.ps1
-    - Automates the process of creating new users in active directory. The script creates the AD user, assigns a mailbox, and assigns a 365 license.
+    - Automates the process of creating new users in active directory. The script creates the AD user with all required properties, assigns a mailbox, and assigns a 365 license.
