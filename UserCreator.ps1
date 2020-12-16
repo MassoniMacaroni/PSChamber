@@ -367,9 +367,9 @@ $phoneReq = Read-Host -Prompt "`nPlease specify 'yes' if you'd like to add a pho
         $phones = Get-aduser -Identity $global:samAccountName -Properties ipphone,homephone,officephone
         $global:extNumber = Read-Host -Prompt "`nPlease enter a four digit extension"
         $phones.ipphone = $global:extNumber
-        $phones.homephone = "(02) 4560 $global:extNumber"
-        $phones.officephone = "+6124560$global:extNumber"
-        $phones.fax = "(02) 4587 7740"
+        $phones.homephone = "(02) XXXX $global:extNumber"
+        $phones.officephone = "+61XXXXX$global:extNumber"
+        $phones.fax = "(02) XXXX XXXX"
 
         Write-host "The current extension number is $global:extNumber"
         $reviewcheck = Read-Host -Prompt "`nPlease specify 'yes' if the extension number $global:extNumber is correct"
