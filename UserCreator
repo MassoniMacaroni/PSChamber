@@ -211,7 +211,7 @@ else {
 }
 
 } Until ($credsVerified -eq $true)
-return $UserCredential
+return $cred
 }
 
 function Create-FDrive($username){
@@ -219,6 +219,10 @@ function Create-FDrive($username){
 .SYNOPSIS
 Creates the users FDrive and adds all of the security required for that folder, takes the username parameter of a samaccountname and uses it to name the folder
 #>
+  $fDriveReq = $false
+  $fDriveCheck = Read-host -Prompt "`nPlease specify 'yes' if you'd like to add a F Drive"
+  if($fDriveCheck -eq 'yes' -or $fDriveCheck -eq 'y'){
+  Do {
   #Path for user folder
   $Path = "\\HCC-DOM\files\User"
 
@@ -237,7 +241,8 @@ Creates the users FDrive and adds all of the security required for that folder, 
 
   #Set access
   Set-Acl -AclObject $acl "$path\$username"
-
+  $fDriveReq = $true
+  } Until ($fDriveReq -eq $true)
 }
 
 function Create-Mailbox(){
@@ -353,9 +358,10 @@ function Check-Phone() {
 Prompts if a phone extension is required for the user profile and provides and option to review input
 #>
 $extVerified = $false
-Do {
-    $phoneReq = Read-Host -Prompt "`nPlease specify 'yes' if you'd like to add a phone extension"
+$phoneReq = Read-Host -Prompt "`nPlease specify 'yes' if you'd like to add a phone extension"
     if($phoneReq -eq 'yes' -or $phoneReq -eq 'y'){
+    Do {
+    
         $phones = Get-aduser -Identity $global:samAccountName -Properties ipphone,homephone,officephone
         $global:extNumber = Read-Host -Prompt "`nPlease enter a four digit extension"
         $phones.ipphone = $global:extNumber
@@ -365,15 +371,15 @@ Do {
 
         Write-host "The current extension number is $global:extNumber"
         $reviewcheck = Read-Host -Prompt "`nPlease specify 'yes' if the extension number $global:extNumber is correct"
-    if($reviewCheck -eq 'yes' -or $reviewCheck -eq 'y') {
-        Set-ADUser -Instance $phones
-        Write-Host "`n$global:samAccountName has been assigned an extension of $global:extNumber"
-        $extVerified = $true
-        Start-Sleep(3)
+        if($reviewCheck -eq 'yes' -or $reviewCheck -eq 'y') {
+            Set-ADUser -Instance $phones
+            Write-Host "`n$global:samAccountName has been assigned an extension of $global:extNumber"
+            $extVerified = $true
+            Start-Sleep(3)
 }
 
-}
 } until ($extVerified -eq $true)
+}
 }
 
 function User-CreatedBanner(){
@@ -428,7 +434,7 @@ Set-LikeUser
 } else {
 Set-UserProperties
 }
-Test-Cred
+$UserCredential = Test-Cred
 Create-Mailbox
 Start-Sleep(10)
 Create-FDrive -username $global:samAccountName
@@ -443,7 +449,7 @@ $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
 
 
 ###############################################
-#                                             #
+#                                             #n
 #               Credits:                      #
 #                John L                       #
 #                Jono M                       #
