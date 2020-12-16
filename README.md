@@ -16,5 +16,5 @@ Table of Contents
     - Removes English US and forces English Au to the default language.
 * RemoveNCopy.ps1
     - Removes a file and copies it to multiple PCs
-* Usercreator.ps1
+* Create User Tool.ps1
     - Automates the process of creating new users in active directory. The script creates the AD user with all required properties, assigns a mailbox, and assigns a 365 license.
