@@ -18,6 +18,8 @@ $global:azureConnectServer = "HCC-S-SRAZC01"
 #Change this variable if the exchange server is updated
 $global:exchangeConectURI = "http://hcc-s-srex03/PowerShell/"
 
+$global:domain = "hcc-dom"
+
 function banner(){
 write-host "
 
@@ -94,7 +96,7 @@ $global:friendlyName = $global:firstName + ' '  + $global:lastName
 $global:samAccountName = $global:firstName[0] + $global:lastName.Substring(0, [Math]::Min($global:lastName.Length, 7))
 
 #Create user email address
-$global:emailAddress = $global:firstName + "." + $global:lastName + "@hawkesbury.nsw.gov.au"
+$global:emailAddress = $global:firstName + "." + $global:lastName + "@email.com"
 
 #Get Position Title
 $global:positionTitle = Read-Host -Prompt "Specify users position title"
@@ -224,7 +226,7 @@ Creates the users FDrive and adds all of the security required for that folder, 
   if($fDriveCheck -eq 'yes' -or $fDriveCheck -eq 'y'){
   Do {
   #Path for user folder
-  $Path = "\\HCC-DOM\files\User"
+  $Path = "\\$global:domain\files\User"
 
 
   #create new folder
@@ -233,8 +235,8 @@ Creates the users FDrive and adds all of the security required for that folder, 
   #Create access
   $acl  = Get-Acl "$path\$username"
   #The most painful part of powershell ever.
-  $ace1 = New-Object Security.AccessControl.FileSystemAccessRule ("hcc-dom\$username", 'Modify', 'ContainerInherit, ObjectInherit', 'InheritOnly', 'Allow')
-  $ace2 = New-Object Security.AccessControl.FileSystemAccessRule ("hcc-dom\$username", @('ReadandExecute', 'Write','DeleteSubdirectoriesAndFiles'), 'None', 'None', 'Allow')
+  $ace1 = New-Object Security.AccessControl.FileSystemAccessRule ("$global:domain\$username", 'Modify', 'ContainerInherit, ObjectInherit', 'InheritOnly', 'Allow')
+  $ace2 = New-Object Security.AccessControl.FileSystemAccessRule ("$global:domain\$username", @('ReadandExecute', 'Write','DeleteSubdirectoriesAndFiles'), 'None', 'None', 'Allow')
   
   $acl.AddAccessRule($ace1)
   $acl.AddAccessRule($ace2)
@@ -318,7 +320,7 @@ foreach ($department in $departmentArray){
 $depChoice = Read-Host -Prompt "Select the department suitable for the user"
 $department = $departmentArray[$depChoice]
 
-$company = "Hawkesbury City Council"
+$company = "Your company name"
 
 Set-ADUser -Identity $global:samAccountName -Department $department -Company $company -Office $office
 }
@@ -336,7 +338,7 @@ if($365Check -eq 'yes' -or $365Check -eq 'y'){
     Connect-MsolService
 
     Set-MsolUser -UserPrincipalName $emailaddress -UsageLocation "AU"
-    Set-MsolUserLicense -UserPrincipalName $emailaddress -AddLicenses "HawkesburyCityCouncil:ENTERPRISEPACK"
+    Set-MsolUserLicense -UserPrincipalName $emailaddress -AddLicenses "365 License Type"
 }
 
 }
