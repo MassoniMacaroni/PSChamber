@@ -12,13 +12,13 @@ Clear-Host
 
 ###Global Variables###
 #if there is restructure of the OU tree this variable needs to be updated
-$global:dn = "OU=Current Branch,OU=HCC,DC=HCC-DOM,DC=hawkesbury,DC=nsw,DC=gov,DC=au"
+$global:dn = "OU= ,OU= ,DC= ,DC= ,DC= ,DC= ,DC= "
 #If the azure connect server is updated change this variable
-$global:azureConnectServer = "HCC-S-SRAZC01"
+$global:azureConnectServer = "Azure Connect Server"
 #Change this variable if the exchange server is updated
-$global:exchangeConectURI = "http://hcc-s-srex03/PowerShell/"
+$global:exchangeConectURI = "http://ExchangeServer/PowerShell/"
 
-$global:domain = "hcc-dom"
+$global:domain = "domain"
 
 function banner(){
 write-host "
