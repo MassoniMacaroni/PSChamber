@@ -246,6 +246,7 @@ Creates the users FDrive and adds all of the security required for that folder, 
   $fDriveReq = $true
   } Until ($fDriveReq -eq $true)
 }
+}
 
 function Create-Mailbox(){
 <#
