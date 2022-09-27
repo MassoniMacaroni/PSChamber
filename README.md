@@ -9,7 +9,7 @@ Table of Contents
 * ADUnlockUserTool.ps1    
     - Powershell tool to easily unlock locked accounts in Active Directory.
 * BatExePOSH 
-    - Simple command to run powershell scripts via batch.
+    - Simple command to run powershell scripts via batch because i forget it.
 * DeleteT1FoldersRemotely.ps1 
     - This script enables WinRM in order to remotely delete a multiple folders using wildcards.
 * SetEnglishAu.ps1 
