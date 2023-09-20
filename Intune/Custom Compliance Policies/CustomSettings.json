@@ -1,0 +1,33 @@
+{
+   "Rules":[ 
+       { 
+          "SettingName":"serviceRunning",
+          "Operator":"IsEquals",
+          "DataType":"Boolean",
+          "Operand":true,
+          "MoreInfoUrl":"https://google.com.au",
+          "RemediationStrings":[ 
+             { 
+                "Language":"en_US",
+                "Title":"Service must be running.",
+                "Description": "The required service is not running. Please ensure the service is started."
+             }
+          ]
+       },
+       { 
+          "SettingName":"fileExists",
+          "Operator":"IsEquals",
+          "DataType":"Boolean",
+          "Operand":true,
+          "MoreInfoUrl":"https://google.com.au",
+          "RemediationStrings":[ 
+             { 
+                "Language": "en_US",
+                "Title": "File must exist.",
+                "Description": "The required file does not exist on the system. Please ensure the file is in the correct location."
+             }
+          ]
+       }
+    ]
+   }
+   
