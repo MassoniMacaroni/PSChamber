@@ -1,20 +1,4 @@
-## MODULE REQUIREMENTS ##
-# install-module -name MSAL.PS
-
-## APP REGISTRATION REQUIRED PERMISSIONS ##
-# Directory.ReadWrite.All - Application
-# Policy.ReadWrite.SecurityDefaults - Application
-# PrivilegedAccess.ReadWrite.AzureAD - Application
-# PrivilegedAccess.ReadWrite.AzureADGroup - Application
-# RoleManagement.ReadWrite.Directory - Application
-# RoleManagement.ReadWrite.Exchange - Application
-# SecurityEvents.ReadWrite.All - Application
-# User.ReadWrite.All - Application
-
-# Import the MSAL module
-Import-Module MSAL.PS
-
-param(
+param (
     [Parameter(Mandatory=$true)]
     [string]$TenantId,
 
@@ -36,6 +20,24 @@ param(
     [Parameter(Mandatory=$true)]
     [string]$password
 )
+
+## MODULE REQUIREMENTS ##
+# install-module -name MSAL.PS
+
+## APP REGISTRATION REQUIRED PERMISSIONS ##
+# Directory.ReadWrite.All - Application
+# Policy.ReadWrite.SecurityDefaults - Application
+# PrivilegedAccess.ReadWrite.AzureAD - Application
+# PrivilegedAccess.ReadWrite.AzureADGroup - Application
+# RoleManagement.ReadWrite.Directory - Application
+# RoleManagement.ReadWrite.Exchange - Application
+# SecurityEvents.ReadWrite.All - Application
+# User.ReadWrite.All - Application
+
+# Import the MSAL module
+Import-Module MSAL.PS
+
+
 
 # Define a hashtable with connection details for Microsoft Authentication Library (MSAL)
 $connectionDetails = @{
